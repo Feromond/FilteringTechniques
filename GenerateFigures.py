@@ -4,10 +4,7 @@ from scipy import signal
 from FilteringTechniques import *
 import pandas as pd
 
-
-
-
-def load_data(file_path, delimiter=','):
+def load_data(file_path:str, delimiter:str=',') -> tuple[list[float],list[float]]:
     """
     Reads a file containing two-column numerical data (time and signal).
     Handles files with or without headers and supports various delimiters.
@@ -16,23 +13,18 @@ def load_data(file_path, delimiter=','):
         file_path (str): Path to the input file.
         
     Returns:
-        tuple: Two lists of floats - time and signal data (returns the file data in order of col0, then col1).
+        tuple[list[float],list[float]]: Two lists of floats - time and signal data (returns the file data in order of col0, then col1).
     """
-
     data = pd.read_csv(file_path, sep=delimiter, header=None)
     # Check for headers (assume headers if non-numeric in the first row)
     if not pd.api.types.is_numeric_dtype(data.iloc[0, 0]):
         data.columns = data.iloc[0]
         data = data[1:].reset_index(drop=True)
-
     if data.shape[1] < 2:
         raise ValueError(f"File {file_path} must have at least two columns.")
-
     col0 = data.iloc[:, 0].astype(float).tolist()
     col1 = data.iloc[:, 1].astype(float).tolist()
-
     return col0, col1
-
 
 """
 Importing the Measured Data and Wavelet from Files
@@ -40,7 +32,6 @@ Importing the Measured Data and Wavelet from Files
 
 wavelet, wavelet_time = load_data("waveletData.txt", ',')
 measured_data, measured_time  = load_data("rawdata.txt", ',')
-
 
 # Time between each measurement sample (sampling rate)
 dt = abs(wavelet_time[1]-wavelet_time[0])
